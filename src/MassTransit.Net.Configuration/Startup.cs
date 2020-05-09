@@ -32,6 +32,11 @@ namespace MassTransit.Net.Configuration
                     cfg.UseHealthCheck(provider);
 
                     cfg.Host("rabbitmq://localhost");
+                    //cfg.Host(new Uri("rabbitmq://a-machine-name/a-virtual-host"), host =>
+                    //{
+                    //    host.Username("username");
+                    //    host.Password("password");
+                    //});
 
                     cfg.ReceiveEndpoint("submit-order", ep =>
                     {
