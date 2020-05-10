@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using GreenPipes;
+using MassTransit.Net.DependencyInjection.MessageContracts;
+using MassTransit.Net.DependencyInjection.Consumers;
 
 namespace MassTransit.Net.DependencyInjection
 {
@@ -20,6 +22,7 @@ namespace MassTransit.Net.DependencyInjection
             services.AddMassTransit(x =>
             {
                 x.AddConsumer<OrderConsumer>();
+                x.AddConsumer<CheckOrderStatusConsumer>();
 
                 x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
                 {
@@ -40,6 +43,8 @@ namespace MassTransit.Net.DependencyInjection
                 }));
 
                 x.AddRequestClient<SubmitOrder>();
+
+                x.AddRequestClient<CheckOrderStatus>();
             });
 
             services.AddSingleton<IHostedService, BusService>();

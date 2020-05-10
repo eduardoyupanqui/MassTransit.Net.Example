@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MassTransit.Net.DependencyInjection.MessageContracts;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +14,18 @@ namespace MassTransit.Net.DependencyInjection.Controller
     public class OrderController : ControllerBase
     {
         private readonly IRequestClient<SubmitOrder> _requestClient;
-
-        public OrderController(IRequestClient<SubmitOrder> requestClient)
+        private readonly IRequestClient<CheckOrderStatus> _client;
+        public OrderController(IRequestClient<SubmitOrder> requestClient, IRequestClient<CheckOrderStatus> client)
         {
             _requestClient = requestClient;
+            _client = client;
+        }
+        [HttpGet()]
+        public async Task<IActionResult> Get(string id)
+        {
+            var response = await _client.GetResponse<OrderStatusResult>(new { OrderId = id });
+
+            return Ok(response.Message);
         }
 
         [HttpPost()]
