@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MassTransit.Net.Courier", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MassTransit.Net.Quartz", "src\MassTransit.Net.Quartz\MassTransit.Net.Quartz.csproj", "{BD54E2EE-F994-405A-B85E-F4286C47BFFB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MassTransit.Net.QuartzService", "src\MassTransit.Net.QuartzService\MassTransit.Net.QuartzService.csproj", "{BC2857C4-2FAF-4C7E-ABF1-A4CBA184F24C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{BD54E2EE-F994-405A-B85E-F4286C47BFFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD54E2EE-F994-405A-B85E-F4286C47BFFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD54E2EE-F994-405A-B85E-F4286C47BFFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC2857C4-2FAF-4C7E-ABF1-A4CBA184F24C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC2857C4-2FAF-4C7E-ABF1-A4CBA184F24C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC2857C4-2FAF-4C7E-ABF1-A4CBA184F24C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC2857C4-2FAF-4C7E-ABF1-A4CBA184F24C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
