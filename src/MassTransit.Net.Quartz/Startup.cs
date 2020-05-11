@@ -28,9 +28,9 @@ namespace MassTransit.Net.Quartz
                     cfg.Host("localhost");
 
                     //1) Para utilizar MassTransit.QuartzService
-                    //cfg.UseMessageScheduler(new Uri("rabbitmq://localhost/masstransit_quartz_scheduler"));
+                    cfg.UseMessageScheduler(new Uri("rabbitmq://localhost/quartz_scheduler"));
                     //2) Para utilizar MassTransit.Quartz In Memory, para pruebas [No Recomendado]
-                    cfg.UseInMemoryScheduler();
+                    //cfg.UseInMemoryScheduler();
 
                     cfg.ReceiveEndpoint("schedule_test_queue", ep =>
                     {
