@@ -22,10 +22,14 @@ namespace MassTransit.Net.Jobs.Client.Consumers
             _logger = logger;
             _executor = executor;
 
-            _executor.ProcessStarted += new EventHandler<ExecutorStartEventArgs>(OnProcessStarted);
-            _executor.StatusTarea += new EventHandler<ExecutorTaskEventArgs>(OnStatusTarea);
-            _executor.ProcessCompleted += new EventHandler<ExecutorCompleteEventArgs>(OnProcessCompleted);
+            _executor.ProcessStarted += OnProcessStarted;
+            _executor.StatusTarea += OnStatusTarea;
+            _executor.ProcessCompleted += OnProcessCompleted;
+            _executor.ProcessFailed += OnProcessFailed;
         }
+
+        
+
         public Task Consume(ConsumeContext<JobCommand> context)
         {
             _logger.LogInformation($"JobId: {context.Message.JobId} , InputJob: {context.Message.JobInput}");
@@ -49,6 +53,12 @@ namespace MassTransit.Net.Jobs.Client.Consumers
         {
             _logger.LogInformation($"JobId: {this.JobId} Complete on : {e.FechaFin}");
             //Comunicar al Master el fin del job
+        }
+
+        private void OnProcessFailed(object sender, ExecutorFailEventArgs e)
+        {
+            _logger.LogInformation($"JobId: {this.JobId} Failed on : {e.Mensaje} {e.StackTrace}");
+            //Comunicar al Master que el job ha fallado
         }
     }
 }
