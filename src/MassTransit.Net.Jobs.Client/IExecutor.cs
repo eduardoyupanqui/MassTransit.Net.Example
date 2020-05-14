@@ -11,6 +11,7 @@ namespace MassTransit.Net.Jobs.Client
         event EventHandler<ExecutorStartEventArgs> ProcessStarted;
         event EventHandler<ExecutorTaskEventArgs> StatusTarea;
         event EventHandler<ExecutorCompleteEventArgs> ProcessCompleted;
+        event EventHandler<ExecutorFailEventArgs> ProcessFailed;
         void Execute(JobCommand command);
     }
 }

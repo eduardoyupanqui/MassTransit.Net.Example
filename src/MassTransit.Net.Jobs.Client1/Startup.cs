@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MassTransit.Net.Jobs.Client;
-using MassTransit.Net.Jobs.Client1.Consumers;
+using MassTransit.Net.Jobs.Client.Consumers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;

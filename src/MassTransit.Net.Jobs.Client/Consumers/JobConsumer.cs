@@ -9,7 +9,7 @@ using System.Linq;
 using System.Net.Mime;
 using System.Threading.Tasks;
 
-namespace MassTransit.Net.Jobs.Client1.Consumers
+namespace MassTransit.Net.Jobs.Client.Consumers
 {
     public class JobConsumer : IConsumer<JobCommand>
     {
@@ -25,8 +25,6 @@ namespace MassTransit.Net.Jobs.Client1.Consumers
             _executor.ProcessStarted += new EventHandler<ExecutorStartEventArgs>(OnProcessStarted);
             _executor.StatusTarea += new EventHandler<ExecutorTaskEventArgs>(OnStatusTarea);
             _executor.ProcessCompleted += new EventHandler<ExecutorCompleteEventArgs>(OnProcessCompleted);
-
-
         }
         public Task Consume(ConsumeContext<JobCommand> context)
         {
@@ -52,9 +50,5 @@ namespace MassTransit.Net.Jobs.Client1.Consumers
             _logger.LogInformation($"JobId: {this.JobId} Complete on : {e.FechaFin}");
             //Comunicar al Master el fin del job
         }
-
-
-
-
     }
 }
