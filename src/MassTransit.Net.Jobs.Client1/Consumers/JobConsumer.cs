@@ -1,9 +1,12 @@
 ﻿using MassTransit;
+using MassTransit.Net.Jobs.Client;
 using MassTransit.Net.Jobs.Client.Commands;
+using MassTransit.Net.Jobs.Client.EventArgs;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mime;
 using System.Threading.Tasks;
 
 namespace MassTransit.Net.Jobs.Client1.Consumers
@@ -11,15 +14,47 @@ namespace MassTransit.Net.Jobs.Client1.Consumers
     public class JobConsumer : IConsumer<JobCommand>
     {
         private readonly ILogger<JobConsumer> _logger;
-        public JobConsumer(ILogger<JobConsumer> logger)
+        private readonly IExecutor _executor;
+
+        private Guid JobId;
+        public JobConsumer(ILogger<JobConsumer> logger, IExecutor executor)
         {
             _logger = logger;
-        }
+            _executor = executor;
 
+            _executor.ProcessStarted += new EventHandler<ExecutorStartEventArgs>(OnProcessStarted);
+            _executor.StatusTarea += new EventHandler<ExecutorTaskEventArgs>(OnStatusTarea);
+            _executor.ProcessCompleted += new EventHandler<ExecutorCompleteEventArgs>(OnProcessCompleted);
+
+
+        }
         public Task Consume(ConsumeContext<JobCommand> context)
         {
             _logger.LogInformation($"JobId: {context.Message.JobId} , InputJob: {context.Message.JobInput}");
+            JobId = context.Message.JobId;
+            _executor.Execute(context.Message);
             return Task.CompletedTask;
         }
+
+        private void OnProcessStarted(object sender, ExecutorStartEventArgs e)
+        {
+            _logger.LogInformation($"JobId: {this.JobId} Started on : {e.FechaInicio}");
+            //Comunicar al Master el inicio del job
+        }
+
+        private void OnStatusTarea(object sender, ExecutorTaskEventArgs e)
+        {
+            _logger.LogInformation($"JobId: {this.JobId} Execute Tarea {e.Orden} : {e.Mensaje}");
+            //Comunicar al Master el progreso de las tareas
+        }
+        private void OnProcessCompleted(object sender, ExecutorCompleteEventArgs e)
+        {
+            _logger.LogInformation($"JobId: {this.JobId} Complete on : {e.FechaFin}");
+            //Comunicar al Master el fin del job
+        }
+
+
+
+
     }
 }
