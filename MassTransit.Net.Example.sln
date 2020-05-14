@@ -9,9 +9,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MassTransit.Net.DependencyI
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MassTransit.Net.Courier", "src\MassTransit.Net.Courier\MassTransit.Net.Courier.csproj", "{88E1DF7A-1DCE-45D6-A9C5-D09D7E8D27F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MassTransit.Net.Quartz", "src\MassTransit.Net.Quartz\MassTransit.Net.Quartz.csproj", "{BD54E2EE-F994-405A-B85E-F4286C47BFFB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MassTransit.Net.Quartz", "src\MassTransit.Net.Quartz\MassTransit.Net.Quartz.csproj", "{BD54E2EE-F994-405A-B85E-F4286C47BFFB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MassTransit.Net.QuartzService", "src\MassTransit.Net.QuartzService\MassTransit.Net.QuartzService.csproj", "{BC2857C4-2FAF-4C7E-ABF1-A4CBA184F24C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MassTransit.Net.QuartzService", "src\MassTransit.Net.QuartzService\MassTransit.Net.QuartzService.csproj", "{BC2857C4-2FAF-4C7E-ABF1-A4CBA184F24C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MassTransit.Net.Jobs.Master", "src\MassTransit.Net.Jobs.Master\MassTransit.Net.Jobs.Master.csproj", "{A68777E5-E62D-4BE4-8B1F-A4543A838A5B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MassTransit.Net.Jobs.Client2", "src\MassTransit.Net.Jobs.Client2\MassTransit.Net.Jobs.Client2.csproj", "{D291BF51-1567-4DA9-8ADD-172EC95F43D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MassTransit.Net.Jobs.Client1", "src\MassTransit.Net.Jobs.Client1\MassTransit.Net.Jobs.Client1.csproj", "{48A19163-3B14-408D-9836-6A7689B64B67}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +45,18 @@ Global
 		{BC2857C4-2FAF-4C7E-ABF1-A4CBA184F24C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BC2857C4-2FAF-4C7E-ABF1-A4CBA184F24C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BC2857C4-2FAF-4C7E-ABF1-A4CBA184F24C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A68777E5-E62D-4BE4-8B1F-A4543A838A5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A68777E5-E62D-4BE4-8B1F-A4543A838A5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A68777E5-E62D-4BE4-8B1F-A4543A838A5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A68777E5-E62D-4BE4-8B1F-A4543A838A5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D291BF51-1567-4DA9-8ADD-172EC95F43D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D291BF51-1567-4DA9-8ADD-172EC95F43D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D291BF51-1567-4DA9-8ADD-172EC95F43D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D291BF51-1567-4DA9-8ADD-172EC95F43D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48A19163-3B14-408D-9836-6A7689B64B67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48A19163-3B14-408D-9836-6A7689B64B67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48A19163-3B14-408D-9836-6A7689B64B67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48A19163-3B14-408D-9836-6A7689B64B67}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
