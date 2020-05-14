@@ -3,5 +3,15 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
-
+  
+  <ItemGroup>
+    <PackageReference Include="MassTransit.AspNetCore" Version="6.2.5" />
+    <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="6.2.5" />
+    <PackageReference Include="MassTransit.RabbitMQ" Version="6.2.5" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\MassTransit.Net.Jobs.Client\MassTransit.Net.Jobs.Client.csproj" />
+  </ItemGroup>
+  
 </Project>
