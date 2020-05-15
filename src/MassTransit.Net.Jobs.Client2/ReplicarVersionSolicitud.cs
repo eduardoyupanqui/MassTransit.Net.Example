@@ -1,16 +1,15 @@
 ﻿using MassTransit.Net.Jobs.Client;
 using MassTransit.Net.Jobs.Client.Commands;
-using MassTransit.Net.Jobs.Client.EventArgs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MassTransit.Net.Jobs.Client1
+namespace MassTransit.Net.Jobs.Client2
 {
-    public sealed class FinalizarActividadExecutor : BaseExecutor
+    public sealed class ReplicarVersionSolicitud : BaseExecutor
     {
-        public FinalizarActividadExecutor() : base()
+        public ReplicarVersionSolicitud() : base()
         {
 
         }
@@ -25,4 +24,3 @@ namespace MassTransit.Net.Jobs.Client1
         }
     }
 }
-
