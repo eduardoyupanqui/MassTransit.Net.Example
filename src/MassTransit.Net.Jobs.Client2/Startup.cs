@@ -24,7 +24,7 @@ namespace MassTransit.Net.Jobs.Client2
                 x.AddConsumer<JobConsumer>();
                 x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
                 {
-                    cfg.Host("localhost");
+                    cfg.Host("rabbitmq://localhost/vhost-job");
 
                     cfg.ReceiveEndpoint("test_queue2", ep =>
                     {

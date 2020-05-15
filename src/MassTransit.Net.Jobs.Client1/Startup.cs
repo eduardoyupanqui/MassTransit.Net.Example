@@ -23,16 +23,16 @@ namespace MassTransit.Net.Jobs.Client1
             {
                 x.AddConsumer<JobConsumer>();
                 x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
-                {
-                    cfg.Host("localhost");
-
-                    cfg.ReceiveEndpoint("test_queue1", ep =>
                     {
-                        ep.Consumer<JobConsumer>(provider);
-                    });
+                        cfg.Host("rabbitmq://localhost/vhost-job");
+
+                        cfg.ReceiveEndpoint("test_queue1", ep =>
+                        {
+                            ep.Consumer<JobConsumer>(provider);
+                        });
 
 
-                }));
+                    }));
             });
             services.AddMassTransitHostedService();
         }

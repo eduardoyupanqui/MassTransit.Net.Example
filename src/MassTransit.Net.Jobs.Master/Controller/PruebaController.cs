@@ -15,7 +15,7 @@ namespace MassTransit.Net.Jobs.Controller
     public class PruebaController : ControllerBase
     {
         private readonly IBus _bus;
-        public PruebaController(IBus bus)
+        public PruebaController(IBus bus) 
         {
             _bus = bus;
         }
@@ -32,7 +32,7 @@ namespace MassTransit.Net.Jobs.Controller
             {
                 return BadRequest();
             }
-            var sendEndpoint = await _bus.GetSendEndpoint(new Uri($"rabbitmq://localhost/{queue}"));
+            var sendEndpoint = await _bus.GetSendEndpoint(new Uri($"queue:{queue}"));
             await sendEndpoint.Send<JobCommand>(new
             {
                 JobId = Guid.NewGuid(),

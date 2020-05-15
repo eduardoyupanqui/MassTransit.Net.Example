@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GreenPipes;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -20,10 +21,10 @@ namespace MassTransit.Net.Jobs.Master
             {
                 x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
                 {
-                    cfg.Host("localhost");
+                    cfg.Host("rabbitmq://localhost/vhost-job");
                 }));
             });
-            services.AddMassTransitHostedService();
+            //services.AddMassTransitHostedService();
             services.AddControllers();
         }
 
@@ -44,7 +45,10 @@ namespace MassTransit.Net.Jobs.Master
                        pattern: "{controller}/{action=Index}/{id?}");
                 endpoints.MapGet("/", async context =>
                 {
-                    await context.Response.WriteAsync("Hello World Master!");
+                    var bus = context.RequestServices.GetService<IBus>();
+                    context.Response.ContentType = "application/json";
+                    string jsonString = Newtonsoft.Json.JsonConvert.SerializeObject(bus.GetProbeResult());
+                    await context.Response.WriteAsync(jsonString); ;
                 });
             });
         }
