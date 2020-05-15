@@ -18,17 +18,17 @@ namespace MassTransit.Net.Jobs.Client1
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<IExecutor, FinalizarActividadExecutor>();
+            services.AddTransient<FinalizarActividadExecutor>();
             services.AddMassTransit(x =>
             {
-                x.AddConsumer<JobConsumer>();
+                x.AddConsumer<JobConsumer<FinalizarActividadExecutor>>();
                 x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
                     {
                         cfg.Host("rabbitmq://localhost/vhost-job");
 
                         cfg.ReceiveEndpoint("test_queue1", ep =>
                         {
-                            ep.Consumer<JobConsumer>(provider);
+                            ep.Consumer<JobConsumer<FinalizarActividadExecutor>>(provider);
                         });
 
 

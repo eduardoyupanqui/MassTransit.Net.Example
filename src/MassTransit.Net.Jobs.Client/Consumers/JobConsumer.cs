@@ -11,13 +11,13 @@ using System.Threading.Tasks;
 
 namespace MassTransit.Net.Jobs.Client.Consumers
 {
-    public class JobConsumer : IConsumer<JobCommand>
+    public class JobConsumer<T> : IConsumer<JobCommand> where T : IExecutor
     {
-        private readonly ILogger<JobConsumer> _logger;
-        private readonly IExecutor _executor;
+        private readonly ILogger _logger;
+        private readonly T _executor;
 
         private Guid JobId;
-        public JobConsumer(ILogger<JobConsumer> logger, IExecutor executor)
+        public JobConsumer(ILogger<JobConsumer<T>> logger, T executor)
         {
             _logger = logger;
             _executor = executor;

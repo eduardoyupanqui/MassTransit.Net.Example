@@ -18,17 +18,17 @@ namespace MassTransit.Net.Jobs.Client2
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<IExecutor, ReplicarVersionSolicitudExecutor>();
+            services.AddTransient<ReplicarVersionSolicitudExecutor>();
             services.AddMassTransit(x =>
             {
-                x.AddConsumer<JobConsumer>();
+                x.AddConsumer<JobConsumer<ReplicarVersionSolicitudExecutor>>();
                 x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
                 {
                     cfg.Host("rabbitmq://localhost/vhost-job");
 
                     cfg.ReceiveEndpoint("test_queue2", ep =>
                     {
-                        ep.Consumer<JobConsumer>(provider);
+                        ep.Consumer<JobConsumer<ReplicarVersionSolicitudExecutor>>(provider);
                     });
 
 
