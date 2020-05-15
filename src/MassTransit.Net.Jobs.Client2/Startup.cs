@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using MassTransit.Net.Jobs.Client;
 using MassTransit.Net.Jobs.Client.Consumers;
+using MassTransit.Net.Jobs.Client.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -26,11 +27,7 @@ namespace MassTransit.Net.Jobs.Client2
                 {
                     cfg.Host("rabbitmq://localhost/vhost-job");
 
-                    cfg.ReceiveEndpoint("test_queue2", ep =>
-                    {
-                        ep.Consumer<JobConsumer<ReplicarVersionSolicitud>>(provider);
-                    });
-
+                    cfg.ReceivedJobEndpoint<ReplicarVersionSolicitud>(provider);
 
                 }));
             });

@@ -1,4 +1,5 @@
 ﻿
+using MassTransit.Net.Jobs.Client;
 using MassTransit.Net.Jobs.Client.Commands;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -20,19 +21,19 @@ namespace MassTransit.Net.Jobs.Controller
             _bus = bus;
         }
         /// <summary>
-        /// https://localhost:44351/Prueba?queue=test_queue1
-        /// https://localhost:44351/Prueba?queue=test_queue2
+        /// https://localhost:44351/Prueba?queue=FinalizarActividad
+        /// https://localhost:44351/Prueba?queue=ReplicarVersionSolicitud
         /// </summary>
         /// <param name="queue"></param>
         /// <returns></returns>
         [HttpGet()]
-        public async Task<IActionResult> Get(string queue)
+        public async Task<IActionResult> Get(string job)
         {
-            if (string.IsNullOrEmpty(queue))
+            if (string.IsNullOrEmpty(job))
             {
                 return BadRequest();
             }
-            var sendEndpoint = await _bus.GetSendEndpoint(new Uri($"queue:{queue}"));
+            var sendEndpoint = await _bus.GetSendEndpoint(new Uri($"queue:{job.ToUnderscoreCase()}"));
             await sendEndpoint.Send<JobCommand>(new
             {
                 JobId = Guid.NewGuid(),
