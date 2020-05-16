@@ -17,7 +17,7 @@ namespace MassTransit.Net.Jobs.Client.Consumers
         private readonly T _executor;
 
         private Guid JobId;
-        public JobConsumer(ILogger<JobConsumer<T>> logger, T executor)
+        public JobConsumer(ILogger<T> logger, T executor)
         {
             _logger = logger;
             _executor = executor;
