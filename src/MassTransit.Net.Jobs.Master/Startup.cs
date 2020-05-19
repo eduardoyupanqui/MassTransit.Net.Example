@@ -30,25 +30,14 @@ namespace MassTransit.Net.Jobs.Master
                 {
                     cfg.Host("rabbitmq://localhost/vhost-job");
 
-                    cfg.ReceiveEndpoint(typeof(JobStarted).Name.ToUnderscoreCase(), ep =>
+                    cfg.ReceiveEndpoint(typeof(JobEvent).Name.ToUnderscoreCase(), ep =>
                     {
                         ep.Consumer<JobStartedConsumer>(provider);
-                    });
-
-                    cfg.ReceiveEndpoint(typeof(JobTaskCompleted).Name.ToUnderscoreCase(), ep =>
-                    {
                         ep.Consumer<JobTaskCompletedConsumer>(provider);
-                    });
-
-                    cfg.ReceiveEndpoint(typeof(JobCompleted).Name.ToUnderscoreCase(), ep =>
-                    {
                         ep.Consumer<JobCompletedConsumer>(provider);
-                    });
-
-                    cfg.ReceiveEndpoint(typeof(JobFailed).Name.ToUnderscoreCase(), ep =>
-                    {
                         ep.Consumer<JobFailedConsumer>(provider);
                     });
+
                 }));
 
             });

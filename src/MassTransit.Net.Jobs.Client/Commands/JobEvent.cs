@@ -4,8 +4,8 @@ using System.Text;
 
 namespace MassTransit.Net.Jobs.Client.Commands
 {
-    public interface JobStarted : JobEvent
+    public interface JobEvent
     {
-        public DateTime FechaInicio { get; }
+        public Guid JobId { get; }
     }
 }
