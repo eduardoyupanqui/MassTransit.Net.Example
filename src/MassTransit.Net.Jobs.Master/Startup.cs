@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GreenPipes;
+using MassTransit.Net.Jobs.Client;
+using MassTransit.Net.Jobs.Client.Commands;
+using MassTransit.Net.Jobs.Master.Consumers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -19,12 +22,37 @@ namespace MassTransit.Net.Jobs.Master
         {
             services.AddMassTransit(x =>
             {
+                x.AddConsumer<JobStartedConsumer>();
+                x.AddConsumer<JobTaskCompletedConsumer>();
+                x.AddConsumer<JobCompletedConsumer>();
+                x.AddConsumer<JobFailedConsumer>();
                 x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
                 {
                     cfg.Host("rabbitmq://localhost/vhost-job");
+
+                    cfg.ReceiveEndpoint(typeof(JobStarted).Name.ToUnderscoreCase(), ep =>
+                    {
+                        ep.Consumer<JobStartedConsumer>(provider);
+                    });
+
+                    cfg.ReceiveEndpoint(typeof(JobTaskCompleted).Name.ToUnderscoreCase(), ep =>
+                    {
+                        ep.Consumer<JobTaskCompletedConsumer>(provider);
+                    });
+
+                    cfg.ReceiveEndpoint(typeof(JobCompleted).Name.ToUnderscoreCase(), ep =>
+                    {
+                        ep.Consumer<JobCompletedConsumer>(provider);
+                    });
+
+                    cfg.ReceiveEndpoint(typeof(JobFailed).Name.ToUnderscoreCase(), ep =>
+                    {
+                        ep.Consumer<JobFailedConsumer>(provider);
+                    });
                 }));
+
             });
-            //services.AddMassTransitHostedService();
+            services.AddMassTransitHostedService();
             services.AddControllers();
         }
 
