@@ -3,72 +3,73 @@ using MassTransit.Net.Jobs.Client.EventArgs;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace MassTransit.Net.Jobs.Client
-{
+{    
     public abstract class BaseExecutor : IExecutor
     {
-        public event EventHandler<ExecutorStartEventArgs> ProcessStarted;
-        public event EventHandler<ExecutorTaskEventArgs> StatusTarea;
-        public event EventHandler<ExecutorCompleteEventArgs> ProcessCompleted;
-        public event EventHandler<ExecutorFailEventArgs> ProcessFailed;
+        public event AsyncEventHandler<ExecutorStartEventArgs> ProcessStarted;
+        public event AsyncEventHandler<ExecutorTaskEventArgs> StatusTarea;
+        public event AsyncEventHandler<ExecutorCompleteEventArgs> ProcessCompleted;
+        public event AsyncEventHandler<ExecutorFailEventArgs> ProcessFailed;
 
         protected BaseExecutor()
         {
 
         }
 
-        public virtual void Execute(JobCommand command)
+        public virtual async Task Execute(JobCommand command)
         {
-            NofificarInicio();
+            await NofificarInicio();
             try
             {
-                EjecutarJob(command);
+                await EjecutarJob(command);
 
             }
             catch (Exception ex)
             {
-                NofificarError(ex.Message, ex.StackTrace);
+                await NofificarError(ex.Message, ex.StackTrace);
                 throw;
             }
 
-            NofificarFin();
+            await NofificarFin();
         }
 
-        public abstract void EjecutarJob(JobCommand command);
+        public abstract Task EjecutarJob(JobCommand command);
 
-        private void NofificarInicio()
+        private async Task NofificarInicio()
         {
-            ProcessStarted(this, new ExecutorStartEventArgs()
+            await (ProcessStarted?.Invoke(this, new ExecutorStartEventArgs()
             {
                 FechaInicio = DateTime.Now
-            });
+            }) ?? Task.CompletedTask).ConfigureAwait(false);
         }
 
-        protected void NofificarProgreso(int orden, string mensaje)
+        protected async Task NofificarProgreso(int orden, string mensaje)
         {
-            StatusTarea(this, new ExecutorTaskEventArgs()
+            await (StatusTarea?.Invoke(this, new ExecutorTaskEventArgs()
             {
                 Orden = orden,
                 Mensaje = mensaje
-            });
+            }) ?? Task.CompletedTask).ConfigureAwait(false);
         }
 
-        private void NofificarError(string message, string stackTrace)
+        private async Task NofificarError(string message, string stackTrace)
         {
-            ProcessFailed(this, new ExecutorFailEventArgs()
+            await (ProcessFailed?.Invoke(this, new ExecutorFailEventArgs()
             {
                 Mensaje = message,
                 StackTrace = stackTrace
-            });
+            }) ?? Task.CompletedTask).ConfigureAwait(false);
         }
 
-        private void NofificarFin()
+        private async Task NofificarFin()
         {
-            ProcessCompleted(this, new ExecutorCompleteEventArgs()
+            await (ProcessCompleted?.Invoke(this, new ExecutorCompleteEventArgs()
             {
                 FechaFin = DateTime.Now
-            });
+            }) ?? Task.CompletedTask).ConfigureAwait(false);
         }
     }
 }

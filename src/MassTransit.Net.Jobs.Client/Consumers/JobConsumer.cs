@@ -31,22 +31,21 @@ namespace MassTransit.Net.Jobs.Client.Consumers
 
         
 
-        public Task Consume(ConsumeContext<JobCommand> context)
+        public async Task Consume(ConsumeContext<JobCommand> context)
         {
             _logger.LogInformation($"JobId: {context.Message.JobId} , InputJob: {context.Message.JobInput}");
             _context = context;
             JobId = context.Message.JobId;
-            _executor.Execute(context.Message);
-            return Task.CompletedTask;
+            await _executor.Execute(context.Message);
         }
 
-        private void OnProcessStarted(object sender, ExecutorStartEventArgs e)
+        private async Task OnProcessStarted(object sender, ExecutorStartEventArgs e)
         {
             _logger.LogInformation($"JobId: {this.JobId} Started on : {e.FechaInicio}");
             //Comunicar al Master el inicio del job
             if (_context != null)
             {
-                _context.Send<JobStarted>(new
+                await _context.Send<JobStarted>(new
                 {
                     JobId = this.JobId,
                     FechaInicio = e.FechaInicio
@@ -54,13 +53,13 @@ namespace MassTransit.Net.Jobs.Client.Consumers
             }
         }
 
-        private void OnStatusTarea(object sender, ExecutorTaskEventArgs e)
+        private async Task OnStatusTarea(object sender, ExecutorTaskEventArgs e)
         {
             _logger.LogInformation($"JobId: {this.JobId} Execute Tarea {e.Orden} : {e.Mensaje}");
             //Comunicar al Master el progreso de las tareas
             if (_context != null)
             {
-                _context.Send<JobTaskCompleted>(new
+                await _context.Send<JobTaskCompleted>(new
                 {
                     JobId = this.JobId,
                     Orden = e.Orden,
@@ -69,13 +68,13 @@ namespace MassTransit.Net.Jobs.Client.Consumers
                 });
             }
         }
-        private void OnProcessCompleted(object sender, ExecutorCompleteEventArgs e)
+        private async Task OnProcessCompleted(object sender, ExecutorCompleteEventArgs e)
         {
             _logger.LogInformation($"JobId: {this.JobId} Complete on : {e.FechaFin}");
             //Comunicar al Master el fin del job
             if (_context != null)
             {
-                _context.Send<JobCompleted>(new
+                await _context.Send<JobCompleted>(new
                 {
                     JobId = this.JobId,
                     FechaFin = DateTime.Now
@@ -83,13 +82,13 @@ namespace MassTransit.Net.Jobs.Client.Consumers
             }
         }
 
-        private void OnProcessFailed(object sender, ExecutorFailEventArgs e)
+        private async Task OnProcessFailed(object sender, ExecutorFailEventArgs e)
         {
             _logger.LogInformation($"JobId: {this.JobId} Failed on : {e.Mensaje} {e.StackTrace}");
             //Comunicar al Master que el job ha fallado
             if (_context != null)
             {
-                _context.Send<JobFailed>(new
+                await _context.Send<JobFailed>(new
                 {
                     JobId = this.JobId,
                     Mensaje = e.Mensaje,
