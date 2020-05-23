@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MassTransit.Net.Courier.Activities;
+using MassTransit.Net.Courier.Contracts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -16,6 +18,32 @@ namespace MassTransit.Net.Courier
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMassTransit(x =>
+            {
+                x.AddExecuteActivity<ValidateImageActivity, ValidateImageArguments>();
+                x.AddExecuteActivity<ProcessImageActivity, ProcessImageArguments>();
+                x.AddActivity<DownloadImageActivity, DownloadImageArguments, DownloadImageLog>();
+
+                x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
+                {
+                    cfg.Host("rabbitmq://localhost/vhost-courier");
+
+                    cfg.ReceiveEndpoint("test_courier_execute", receiveEndpointConfigurator =>
+                    {
+                        var compnsateUri = new Uri("queue:test_courier_compensate");
+                        receiveEndpointConfigurator.ExecuteActivityHost<ValidateImageActivity, ValidateImageArguments>(compnsateUri, provider);
+                        receiveEndpointConfigurator.ExecuteActivityHost<ProcessImageActivity, ProcessImageArguments>(compnsateUri, provider);
+                        receiveEndpointConfigurator.ExecuteActivityHost<DownloadImageActivity, DownloadImageArguments>(compnsateUri, provider);
+                    });
+
+                    cfg.ReceiveEndpoint("test_courier_compensate", receiveEndpointConfigurator =>
+                    {
+                        receiveEndpointConfigurator.CompensateActivityHost<DownloadImageActivity, DownloadImageLog>(provider);
+                    });
+                }));
+            });
+            services.AddMassTransitHostedService();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
