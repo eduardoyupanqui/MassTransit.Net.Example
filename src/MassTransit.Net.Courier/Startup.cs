@@ -43,7 +43,7 @@ namespace MassTransit.Net.Courier
                 }));
             });
             services.AddMassTransitHostedService();
-
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,6 +58,9 @@ namespace MassTransit.Net.Courier
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllerRoute(
+                       name: "default",
+                       pattern: "{controller}/{action=Index}/{id?}");
                 endpoints.MapGet("/", async context =>
                 {
                     await context.Response.WriteAsync("Hello World!");
