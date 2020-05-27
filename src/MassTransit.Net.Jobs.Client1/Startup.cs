@@ -27,7 +27,7 @@ namespace MassTransit.Net.Jobs.Client1
                     {
                         cfg.Host("rabbitmq://localhost/vhost-job");
 
-                        cfg.ReceivedJobEndpoint<FinalizarActividad>(provider);
+                        cfg.ReceivedJobEndpoint<FinalizarActividad>(provider, host: "EDUARDO-NB");
 
                     }));
             });

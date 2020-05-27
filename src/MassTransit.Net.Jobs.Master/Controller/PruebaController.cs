@@ -21,19 +21,20 @@ namespace MassTransit.Net.Jobs.Controller
             _bus = bus;
         }
         /// <summary>
-        /// https://localhost:44351/Prueba?queue=FinalizarActividad
-        /// https://localhost:44351/Prueba?queue=ReplicarVersionSolicitud
+        /// https://localhost:44351/Prueba?job=FinalizarActividad
+        /// https://localhost:44351/Prueba?job=ReplicarVersionSolicitud
+        /// https://localhost:44351/Prueba?job=FinalizarActividad&host=EDUARDO-NB
         /// </summary>
         /// <param name="queue"></param>
         /// <returns></returns>
         [HttpGet()]
-        public async Task<IActionResult> Get(string job)
+        public async Task<IActionResult> Get(string job, string host)
         {
             if (string.IsNullOrEmpty(job))
             {
                 return BadRequest();
             }
-            var sendEndpoint = await _bus.GetSendEndpoint(new Uri($"queue:{job.ToUnderscoreCase()}"));
+            var sendEndpoint = await _bus.GetSendEndpoint(new Uri($"queue:{job.ToUnderscoreCase().ToConcatHost(host)}"));
             await sendEndpoint.Send<JobCommand>(new
             {
                 JobId = Guid.NewGuid(),

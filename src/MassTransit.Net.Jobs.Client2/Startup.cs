@@ -27,8 +27,8 @@ namespace MassTransit.Net.Jobs.Client2
                 {
                     cfg.Host("rabbitmq://localhost/vhost-job");
 
-                    cfg.ReceivedJobEndpoint<ReplicarVersionSolicitud>(provider);
-
+                    cfg.ReceivedJobEndpoint<ReplicarVersionSolicitud>(provider, host: "EDUARDO-PC");
+                    
                 }));
             });
             services.AddMassTransitHostedService();
