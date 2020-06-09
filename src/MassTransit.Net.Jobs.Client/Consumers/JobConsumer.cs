@@ -16,75 +16,28 @@ namespace MassTransit.Net.Jobs.Client.Consumers
         private readonly ILogger _logger;
         private readonly T _executor;
 
-        private Guid JobId;
-        private ConsumeContext<JobCommand> _context;
         public JobConsumer(ILogger<T> logger, T executor)
         {
             _logger = logger;
             _executor = executor;
-
-            _executor.ProcessStarted += OnProcessStarted;
-            _executor.StatusTarea += OnStatusTarea;
-            _executor.ProcessCompleted += OnProcessCompleted;
-            _executor.ProcessFailed += OnProcessFailed;
         }
 
-
-
-        public async Task Consume(ConsumeContext<JobCommand> context)
+        public Task Consume(ConsumeContext<JobCommand> context)
         {
+            _executor.ProcessStarted += (sender, e) => Task.Run(() => _logger.LogInformation($"JobId: {e.JobId} Started on : {e.FechaInicio}"));
+            _executor.StatusTarea += (sender, e) => Task.Run(()=> _logger.LogInformation($"JobId: {e.JobId} Execute Tarea {e.Orden} : {e.Mensaje}"));
+            _executor.ProcessCompleted += (sender, e) => Task.Run(() => _logger.LogInformation($"JobId: {e.JobId} Complete on : {e.FechaFin}"));
+            _executor.ProcessFailed += (sender, e) => Task.Run(() => _logger.LogInformation($"JobId: {e.JobId} Failed on : {e.Mensaje} {e.StackTrace}"));
+            
+            _executor.ProcessStarted += (sender, e) => context.Send<JobStarted>(e);
+            _executor.StatusTarea += (sender, e) => context.Send<JobTaskCompleted>(e);
+            _executor.ProcessCompleted += (sender, e) => context.Send<JobCompleted>(e);
+            _executor.ProcessFailed += (sender, e) => context.Send<JobFailed>(e);
+
             _logger.LogInformation($"JobId: {context.Message.JobId} , InputJob: {context.Message.JobInput}");
-            _context = context;
-            JobId = context.Message.JobId;
-            var result = await _executor.Execute(context.Message);
-        }
-
-        private Task OnProcessStarted(object sender, ExecutorStartEventArgs e)
-        {
-            _logger.LogInformation($"JobId: {this.JobId} Started on : {e.FechaInicio}");
-            //Comunicar al Master el inicio del job
-            return _context.Send<JobStarted>(new
-            {
-                JobId = this.JobId,
-                FechaInicio = e.FechaInicio
-            });
-        }
-
-        private Task OnStatusTarea(object sender, ExecutorTaskEventArgs e)
-        {
-            _logger.LogInformation($"JobId: {this.JobId} Execute Tarea {e.Orden} : {e.Mensaje}");
-            //Comunicar al Master el progreso de las tareas
-            return _context.Send<JobTaskCompleted>(new
-            {
-                JobId = this.JobId,
-                Orden = e.Orden,
-                Mensaje = e.Mensaje,
-                FechaEjecucion = DateTime.Now
-            });
-        }
-        private Task OnProcessCompleted(object sender, ExecutorCompleteEventArgs e)
-        {
-            _logger.LogInformation($"JobId: {this.JobId} Complete on : {e.FechaFin}");
-            //Comunicar al Master el fin del job
-
-            return _context.Send<JobCompleted>(new
-            {
-                JobId = this.JobId,
-                FechaFin = DateTime.Now
-            });
-        }
-
-        private Task OnProcessFailed(object sender, ExecutorFailEventArgs e)
-        {
-            _logger.LogInformation($"JobId: {this.JobId} Failed on : {e.Mensaje} {e.StackTrace}");
-            //Comunicar al Master que el job ha fallado
-
-            return _context.Send<JobFailed>(new
-            {
-                JobId = this.JobId,
-                Mensaje = e.Mensaje,
-                StackTrace = e.StackTrace,
-            });
+            //_context = context;
+            //JobId = context.Message.JobId;
+            return _executor.Execute(context.Message);
         }
     }
 }

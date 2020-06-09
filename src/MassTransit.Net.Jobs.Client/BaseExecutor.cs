@@ -15,19 +15,21 @@ namespace MassTransit.Net.Jobs.Client
         public event AsyncEventHandler<ExecutorCompleteEventArgs> ProcessCompleted;
         public event AsyncEventHandler<ExecutorFailEventArgs> ProcessFailed;
 
+        public Guid JobId;
         protected BaseExecutor()
         {
 
         }
 
-        public virtual async Task<JobResult> Execute(JobCommand command)
+        public virtual async Task Execute(JobCommand command)
         {
+            JobId = command.JobId;
             await NofificarInicio();
             try
             {
                 var result = await EjecutarJob(command);//.ConfigureAwait(false);
                 await NofificarFin(result);
-                return result;
+                //return result;
 
             }
             catch (Exception ex)
@@ -43,6 +45,7 @@ namespace MassTransit.Net.Jobs.Client
         {
             return (ProcessStarted?.Invoke(this, new ExecutorStartEventArgs()
             {
+                JobId = this.JobId,
                 FechaInicio = DateTime.Now
             }) ?? Task.CompletedTask);//.ConfigureAwait(false);
         }
@@ -51,8 +54,10 @@ namespace MassTransit.Net.Jobs.Client
         {
             return (StatusTarea?.Invoke(this, new ExecutorTaskEventArgs()
             {
+                JobId = this.JobId,
                 Orden = orden,
-                Mensaje = mensaje
+                Mensaje = mensaje,
+                FechaEjecucion = DateTime.Now
             }) ?? Task.CompletedTask);//.ConfigureAwait(false);
         }
 
@@ -60,6 +65,7 @@ namespace MassTransit.Net.Jobs.Client
         {
             return (ProcessFailed?.Invoke(this, new ExecutorFailEventArgs()
             {
+                JobId = this.JobId,
                 Mensaje = message,
                 StackTrace = stackTrace
             }) ?? Task.CompletedTask);//.ConfigureAwait(false);
@@ -69,6 +75,7 @@ namespace MassTransit.Net.Jobs.Client
         {
             return (ProcessCompleted?.Invoke(this, new ExecutorCompleteEventArgs()
             {
+                JobId = this.JobId,
                 OutputJob = jobResult.OutputJob,
                 FechaFin = DateTime.Now
             }) ?? Task.CompletedTask);//.ConfigureAwait(false);
