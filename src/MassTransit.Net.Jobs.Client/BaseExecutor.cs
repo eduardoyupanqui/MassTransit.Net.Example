@@ -39,35 +39,35 @@ namespace MassTransit.Net.Jobs.Client
 
         public abstract Task<JobResult> EjecutarJob(JobCommand command);
 
-        private async Task NofificarInicio()
+        private Task NofificarInicio()
         {
-            await (ProcessStarted?.Invoke(this, new ExecutorStartEventArgs()
+            return (ProcessStarted?.Invoke(this, new ExecutorStartEventArgs()
             {
                 FechaInicio = DateTime.Now
             }) ?? Task.CompletedTask);//.ConfigureAwait(false);
         }
 
-        protected async Task NofificarProgreso(int orden, string mensaje)
+        protected Task NofificarProgreso(int orden, string mensaje)
         {
-            await (StatusTarea?.Invoke(this, new ExecutorTaskEventArgs()
+            return (StatusTarea?.Invoke(this, new ExecutorTaskEventArgs()
             {
                 Orden = orden,
                 Mensaje = mensaje
             }) ?? Task.CompletedTask);//.ConfigureAwait(false);
         }
 
-        private async Task NofificarError(string message, string stackTrace)
+        private Task NofificarError(string message, string stackTrace)
         {
-            await (ProcessFailed?.Invoke(this, new ExecutorFailEventArgs()
+            return (ProcessFailed?.Invoke(this, new ExecutorFailEventArgs()
             {
                 Mensaje = message,
                 StackTrace = stackTrace
             }) ?? Task.CompletedTask);//.ConfigureAwait(false);
         }
 
-        private async Task NofificarFin(JobResult jobResult)
+        private Task NofificarFin(JobResult jobResult)
         {
-            await (ProcessCompleted?.Invoke(this, new ExecutorCompleteEventArgs()
+            return (ProcessCompleted?.Invoke(this, new ExecutorCompleteEventArgs()
             {
                 OutputJob = jobResult.OutputJob,
                 FechaFin = DateTime.Now
