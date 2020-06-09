@@ -29,7 +29,7 @@ namespace MassTransit.Net.Jobs.Client.Consumers
             _executor.ProcessFailed += OnProcessFailed;
         }
 
-        
+
 
         public async Task Consume(ConsumeContext<JobCommand> context)
         {
@@ -39,70 +39,52 @@ namespace MassTransit.Net.Jobs.Client.Consumers
             var result = await _executor.Execute(context.Message);
         }
 
-        private async Task OnProcessStarted(object sender, ExecutorStartEventArgs e)
+        private Task OnProcessStarted(object sender, ExecutorStartEventArgs e)
         {
             _logger.LogInformation($"JobId: {this.JobId} Started on : {e.FechaInicio}");
             //Comunicar al Master el inicio del job
-            if (_context != null)
+            return _context.Send<JobStarted>(new
             {
-                await _context.Send<JobStarted>(new
-                {
-                    JobId = this.JobId,
-                    FechaInicio = e.FechaInicio
-                });
-            }
-            else
-                _logger.LogInformation($"Started - Murio el context");
+                JobId = this.JobId,
+                FechaInicio = e.FechaInicio
+            });
         }
 
-        private async Task OnStatusTarea(object sender, ExecutorTaskEventArgs e)
+        private Task OnStatusTarea(object sender, ExecutorTaskEventArgs e)
         {
             _logger.LogInformation($"JobId: {this.JobId} Execute Tarea {e.Orden} : {e.Mensaje}");
             //Comunicar al Master el progreso de las tareas
-            if (_context != null)
+            return _context.Send<JobTaskCompleted>(new
             {
-                await _context.Send<JobTaskCompleted>(new
-                {
-                    JobId = this.JobId,
-                    Orden = e.Orden,
-                    Mensaje = e.Mensaje,
-                    FechaEjecucion = DateTime.Now
-                });
-            }
-            else
-                _logger.LogInformation($"Execute - Murio el context");
+                JobId = this.JobId,
+                Orden = e.Orden,
+                Mensaje = e.Mensaje,
+                FechaEjecucion = DateTime.Now
+            });
         }
-        private async Task OnProcessCompleted(object sender, ExecutorCompleteEventArgs e)
+        private Task OnProcessCompleted(object sender, ExecutorCompleteEventArgs e)
         {
             _logger.LogInformation($"JobId: {this.JobId} Complete on : {e.FechaFin}");
             //Comunicar al Master el fin del job
-            if (_context != null)
+
+            return _context.Send<JobCompleted>(new
             {
-                await _context.Send<JobCompleted>(new
-                {
-                    JobId = this.JobId,
-                    FechaFin = DateTime.Now
-                });
-            }
-            else
-                _logger.LogInformation($"Complete - Murio el context");
+                JobId = this.JobId,
+                FechaFin = DateTime.Now
+            });
         }
 
-        private async Task OnProcessFailed(object sender, ExecutorFailEventArgs e)
+        private Task OnProcessFailed(object sender, ExecutorFailEventArgs e)
         {
             _logger.LogInformation($"JobId: {this.JobId} Failed on : {e.Mensaje} {e.StackTrace}");
             //Comunicar al Master que el job ha fallado
-            if (_context != null)
+
+            return _context.Send<JobFailed>(new
             {
-                _context.Send<JobFailed>(new
-                {
-                    JobId = this.JobId,
-                    Mensaje = e.Mensaje,
-                    StackTrace = e.StackTrace,
-                });
-            }
-            else
-                _logger.LogInformation($"Failed - Murio el context");
+                JobId = this.JobId,
+                Mensaje = e.Mensaje,
+                StackTrace = e.StackTrace,
+            });
         }
     }
 }
