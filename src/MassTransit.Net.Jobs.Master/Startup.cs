@@ -36,6 +36,10 @@ namespace MassTransit.Net.Jobs.Master
                         ep.Consumer<JobTaskCompletedConsumer>(provider);
                         ep.Consumer<JobCompletedConsumer>(provider);
                         ep.Consumer<JobFailedConsumer>(provider);
+                        
+                        //Asegurar el procesamiento de forma secuencial FIFO
+                        ep.PrefetchCount = 1;
+                        ep.UseConcurrencyLimit(1);
                     });
 
                 }));

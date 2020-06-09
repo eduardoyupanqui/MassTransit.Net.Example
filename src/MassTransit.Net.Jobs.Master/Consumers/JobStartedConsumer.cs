@@ -17,6 +17,7 @@ namespace MassTransit.Net.Jobs.Master.Consumers
         public async Task Consume(ConsumeContext<JobStarted> context)
         {
             _logger.LogInformation($"JobId: {context.Message.JobId} Started on : {context.Message.FechaInicio}");
+            await Task.Delay(1000);
         }
     }
 }

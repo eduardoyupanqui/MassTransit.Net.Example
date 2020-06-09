@@ -22,6 +22,7 @@ namespace MassTransit.Net.Jobs.Client1
             await NofificarProgreso(3, "Se hizo tarea 3");
             await NofificarProgreso(4, "Se hizo tarea 4");
             await NofificarProgreso(5, "Se hizo tarea 5");
+            //throw new Exception("Upss paso algo aca");
             return new JobResult() { OutputJob = "Se termino pé"};
         }
     }
