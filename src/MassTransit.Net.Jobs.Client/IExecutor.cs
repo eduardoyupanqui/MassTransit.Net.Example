@@ -14,6 +14,6 @@ namespace MassTransit.Net.Jobs.Client
         event AsyncEventHandler<ExecutorTaskEventArgs> StatusTarea;
         event AsyncEventHandler<ExecutorCompleteEventArgs> ProcessCompleted;
         event AsyncEventHandler<ExecutorFailEventArgs> ProcessFailed;
-        Task Execute(JobCommand command);
+        Task<JobResult> Execute(JobCommand command);
     }
 }

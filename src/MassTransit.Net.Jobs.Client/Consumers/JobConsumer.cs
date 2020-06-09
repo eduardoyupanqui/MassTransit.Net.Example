@@ -36,7 +36,7 @@ namespace MassTransit.Net.Jobs.Client.Consumers
             _logger.LogInformation($"JobId: {context.Message.JobId} , InputJob: {context.Message.JobInput}");
             _context = context;
             JobId = context.Message.JobId;
-            await _executor.Execute(context.Message);
+            var result = await _executor.Execute(context.Message);
         }
 
         private async Task OnProcessStarted(object sender, ExecutorStartEventArgs e)
@@ -51,6 +51,8 @@ namespace MassTransit.Net.Jobs.Client.Consumers
                     FechaInicio = e.FechaInicio
                 });
             }
+            else
+                _logger.LogInformation($"Started - Murio el context");
         }
 
         private async Task OnStatusTarea(object sender, ExecutorTaskEventArgs e)
@@ -67,6 +69,8 @@ namespace MassTransit.Net.Jobs.Client.Consumers
                     FechaEjecucion = DateTime.Now
                 });
             }
+            else
+                _logger.LogInformation($"Execute - Murio el context");
         }
         private async Task OnProcessCompleted(object sender, ExecutorCompleteEventArgs e)
         {
@@ -80,6 +84,8 @@ namespace MassTransit.Net.Jobs.Client.Consumers
                     FechaFin = DateTime.Now
                 });
             }
+            else
+                _logger.LogInformation($"Complete - Murio el context");
         }
 
         private async Task OnProcessFailed(object sender, ExecutorFailEventArgs e)
@@ -88,13 +94,15 @@ namespace MassTransit.Net.Jobs.Client.Consumers
             //Comunicar al Master que el job ha fallado
             if (_context != null)
             {
-                await _context.Send<JobFailed>(new
+                _context.Send<JobFailed>(new
                 {
                     JobId = this.JobId,
                     Mensaje = e.Mensaje,
                     StackTrace = e.StackTrace,
                 });
             }
+            else
+                _logger.LogInformation($"Failed - Murio el context");
         }
     }
 }

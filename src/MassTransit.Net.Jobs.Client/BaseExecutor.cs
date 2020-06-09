@@ -2,6 +2,7 @@
 using MassTransit.Net.Jobs.Client.EventArgs;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,12 +20,14 @@ namespace MassTransit.Net.Jobs.Client
 
         }
 
-        public virtual async Task Execute(JobCommand command)
+        public virtual async Task<JobResult> Execute(JobCommand command)
         {
             await NofificarInicio();
             try
             {
-                await EjecutarJob(command);
+                var result = await EjecutarJob(command);//.ConfigureAwait(false);
+                await NofificarFin(result);
+                return result;
 
             }
             catch (Exception ex)
@@ -32,18 +35,16 @@ namespace MassTransit.Net.Jobs.Client
                 await NofificarError(ex.Message, ex.StackTrace);
                 throw;
             }
-
-            await NofificarFin();
         }
 
-        public abstract Task EjecutarJob(JobCommand command);
+        public abstract Task<JobResult> EjecutarJob(JobCommand command);
 
         private async Task NofificarInicio()
         {
             await (ProcessStarted?.Invoke(this, new ExecutorStartEventArgs()
             {
                 FechaInicio = DateTime.Now
-            }) ?? Task.CompletedTask).ConfigureAwait(false);
+            }) ?? Task.CompletedTask);//.ConfigureAwait(false);
         }
 
         protected async Task NofificarProgreso(int orden, string mensaje)
@@ -52,7 +53,7 @@ namespace MassTransit.Net.Jobs.Client
             {
                 Orden = orden,
                 Mensaje = mensaje
-            }) ?? Task.CompletedTask).ConfigureAwait(false);
+            }) ?? Task.CompletedTask);//.ConfigureAwait(false);
         }
 
         private async Task NofificarError(string message, string stackTrace)
@@ -61,15 +62,16 @@ namespace MassTransit.Net.Jobs.Client
             {
                 Mensaje = message,
                 StackTrace = stackTrace
-            }) ?? Task.CompletedTask).ConfigureAwait(false);
+            }) ?? Task.CompletedTask);//.ConfigureAwait(false);
         }
 
-        private async Task NofificarFin()
+        private async Task NofificarFin(JobResult jobResult)
         {
             await (ProcessCompleted?.Invoke(this, new ExecutorCompleteEventArgs()
             {
+                OutputJob = jobResult.OutputJob,
                 FechaFin = DateTime.Now
-            }) ?? Task.CompletedTask).ConfigureAwait(false);
+            }) ?? Task.CompletedTask);//.ConfigureAwait(false);
         }
     }
 }
