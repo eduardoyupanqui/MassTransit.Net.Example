@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using MassTransit;
 
 namespace MassTransit.Net.EventHandling
 {
@@ -77,12 +78,27 @@ namespace MassTransit.Net.EventHandling
             {
 
                 x.AddConsumer<JobEnqueueIntegrationEventHandler>();
-                x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
+
+                //x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
+                x.AddBus(provider => Bus.Factory.CreateUsingAmazonSqs(cfg =>
                 {
                     var config = provider.GetRequiredService<IOptions<MasstransitConfig>>().Value;
-                    cfg.Host(config.Host, c => {
-                        c.Username(config.UserName);
-                        c.Password(config.Password);
+                    //cfg.Host(config.Host, c =>
+                    cfg.Host(config.Region, c =>
+                    {
+                        ////For RabbitMQ
+                        //c.Username(config.UserName);
+                        //c.Password(config.Password);
+
+
+                        //For Amazon SQS
+                        c.AccessKey(config.AccessKey);
+                        c.SecretKey(config.SecretKey);
+                        // specify a scope for all queues
+                        c.Scope(config.Scope);
+                        // scope topics as well
+                        c.EnableScopedTopics();
+
                     });
 
                     //cfg.ReceiveEndpoint(typeof(JobCommand).Name.ToUnderscoreCase(), ep =>
@@ -94,10 +110,12 @@ namespace MassTransit.Net.EventHandling
                     //    //ep.UseConcurrencyLimit(1);
                     //});
 
-                    EndpointConvention.Map<JobEnqueueIntegrationEvent>(new Uri($"queue:{typeof(JobCommand).Name.ToUnderscoreCase()}"));
-                    cfg.ReceiveEndpoint(typeof(JobCommand).Name.ToUnderscoreCase().ToConcatHost("EDUARDO-PC"), ep =>
+                    cfg.ReceiveEndpoint(typeof(JobEnqueueIntegrationEvent).Name.ToUnderscoreCase().ToConcatHost("EDUARDO-PC"), e =>
                     {
-                        ep.Consumer<JobEnqueueIntegrationEventHandler>(provider);
+                        e.WaitTimeSeconds = 1;
+                        e.PrefetchCount = 1;
+                        e.Consumer<JobEnqueueIntegrationEventHandler>(provider);
+                        EndpointConvention.Map<JobEnqueueIntegrationEvent>(e.InputAddress);
                     });
 
                 }));

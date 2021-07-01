@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <UserSecretsId>bccbe558-dd6b-48d6-acc7-cedc5151cd25</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,6 +12,7 @@
     <PackageReference Include="MassTransit.AspNetCore" Version="7.2.1" />
     <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="7.2.1" />
     <PackageReference Include="MassTransit.RabbitMQ" Version="7.2.1" />
+    <PackageReference Include="MassTransit.AmazonSQS" Version="7.2.1" />
   </ItemGroup>
 
 </Project>
