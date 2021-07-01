@@ -56,9 +56,9 @@ namespace MassTransit.Net.EventHandling.Application.Commands.Job
                 //var registerCommand = _mapper.Map<RegisterOrdenCommand>(ordenViewModel);
                 _logger.LogInformation("----- Publicando Integracion de evento: {IntegrationEventId} desde {AppName} - ({@IntegrationEvent})", eventMessage.IdJob, Program.AppName, eventMessage);
 
-                //_eventBus.Publish(eventMessage);
-                var sendEndpoint = await _eventBus.GetSendEndpoint(new Uri($"queue:{typeof(JobCommand).Name.ToUnderscoreCase().ToConcatHost(eventMessage.HostName)}"));
-                await sendEndpoint.Send<JobCommand>(eventMessage);
+                await _eventBus.Publish(eventMessage);
+                //var sendEndpoint = await _eventBus.GetSendEndpoint(new Uri($"queue:{typeof(JobCommand).Name.ToUnderscoreCase().ToConcatHost(eventMessage.HostName)}"));
+                //await sendEndpoint.Send<JobCommand>(eventMessage);
                 _logger.LogInformation($"Se registro evento satisfactoriamente {eventMessage.IdJob}");
 
                 return new JobResponse();

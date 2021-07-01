@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using Serilog.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +24,9 @@ namespace MassTransit.Net.EventHandling
                 .UseSerilog((context, services, configuration) => configuration
                         .ReadFrom.Configuration(context.Configuration)
                         .ReadFrom.Services(services)
+                        .MinimumLevel.Debug()
+                        .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+                        .MinimumLevel.Override("Quartz", LogEventLevel.Information)
                         .Enrich.FromLogContext()
                         .WriteTo.Console())
                 .ConfigureWebHostDefaults(webBuilder =>

@@ -11,7 +11,7 @@ using MassTransit.Net.EventHandling.Application.Commands.Job;
 
 namespace MassTransit.Net.EventHandling.Application.IntegrationEvents.EventHandling
 {
-    public class JobEnqueueIntegrationEventHandler : IConsumer<JobCommand>
+    public class JobEnqueueIntegrationEventHandler : IConsumer<JobEnqueueIntegrationEvent>
     {
         private readonly ILogger<JobEnqueueIntegrationEventHandler> _logger;
         private readonly MediatR.IMediator _mediator;
@@ -22,7 +22,7 @@ namespace MassTransit.Net.EventHandling.Application.IntegrationEvents.EventHandl
             _logger = logger;
             _mediator = mediator;
         }
-        public async Task Consume(ConsumeContext<JobCommand> context)
+        public async Task Consume(ConsumeContext<JobEnqueueIntegrationEvent> context)
         {
             var @event = context.Message;
             using (LogContext.PushProperty("IntegrationEventContext", $"{context.MessageId}-{Program.AppName}"))
