@@ -31,8 +31,6 @@ namespace MassTransit.Net.Configuration
 
                 x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
                 {
-                    // configure health checks for this bus instance
-                    cfg.UseHealthCheck(provider);
 
                     cfg.Host("rabbitmq://localhost");
                     //cfg.Host(new Uri("rabbitmq://a-machine-name/a-virtual-host"), host =>

@@ -58,7 +58,7 @@ namespace MassTransit.Net.QuartzService
                         var scheduler = provider.GetRequiredService<IScheduler>();
 
 
-                        var host = cfg.Host(options.Host, options.VirtualHost, h =>
+                        cfg.Host(options.Host, options.VirtualHost, h =>
                         {
                             h.Username(options.Username);
                             h.Password(options.Password);

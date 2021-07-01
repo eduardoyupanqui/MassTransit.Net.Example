@@ -19,7 +19,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MassTransit.Net.Jobs.Client
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MassTransit.Net.Jobs.Client1", "src\MassTransit.Net.Jobs.Client1\MassTransit.Net.Jobs.Client1.csproj", "{48A19163-3B14-408D-9836-6A7689B64B67}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MassTransit.Net.Jobs.Client", "src\MassTransit.Net.Jobs.Client\MassTransit.Net.Jobs.Client.csproj", "{3B247786-398A-40CC-8D66-EB143BA54D35}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MassTransit.Net.Jobs.Client", "src\MassTransit.Net.Jobs.Client\MassTransit.Net.Jobs.Client.csproj", "{3B247786-398A-40CC-8D66-EB143BA54D35}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4527FFB7-553E-458E-A89E-D25B6C84630D}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

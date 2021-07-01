@@ -13,7 +13,7 @@ namespace MassTransit.Net.QuartzService
     {
         readonly IBusControl _bus;
         readonly ILogger _logger;
-        IScheduler _scheduler;
+        readonly IScheduler _scheduler;
 
         public MassTransitConsoleHostedService(IBusControl bus, ILoggerFactory loggerFactory, IScheduler scheduler)
         {
@@ -29,7 +29,7 @@ namespace MassTransit.Net.QuartzService
             _logger.LogInformation("Starting bus");
             await _bus.StartAsync(cancellationToken).ConfigureAwait(false);
 
-            _scheduler.JobFactory = new MassTransitJobFactory(_bus);
+            _scheduler.JobFactory = new MassTransitJobFactory(_bus, null);
             try
             {
                 _logger.LogInformation("Starting scheduler");

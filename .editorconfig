@@ -1,0 +1,19 @@
+﻿[*.cs]
+
+# S101: Types should be named in PascalCase
+dotnet_diagnostic.S101.severity = suggestion
+
+# S1186: Methods should not be empty
+dotnet_diagnostic.S1186.severity = suggestion
+
+# S927: Parameter names should match base declaration and other partial definitions
+dotnet_diagnostic.S927.severity = suggestion
+
+# S1075: URIs should not be hardcoded
+dotnet_diagnostic.S1075.severity = suggestion
+
+# S125: Sections of code should not be commented out
+dotnet_diagnostic.S125.severity = suggestion
+
+# S1118: Utility classes should not have public constructors
+dotnet_diagnostic.S1118.severity = suggestion
