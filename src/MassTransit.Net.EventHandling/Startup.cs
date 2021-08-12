@@ -79,25 +79,25 @@ namespace MassTransit.Net.EventHandling
 
                 x.AddConsumer<JobEnqueueIntegrationEventHandler>();
 
-                //x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
-                x.AddBus(provider => Bus.Factory.CreateUsingAmazonSqs(cfg =>
+                x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
+                //x.AddBus(provider => Bus.Factory.CreateUsingAmazonSqs(cfg =>
                 {
                     var config = provider.GetRequiredService<IOptions<MasstransitConfig>>().Value;
-                    //cfg.Host(config.Host, c =>
-                    cfg.Host(config.Region, c =>
+                    cfg.Host(config.Host, c =>
+                    //cfg.Host(config.Region, c =>
                     {
-                        ////For RabbitMQ
-                        //c.Username(config.UserName);
-                        //c.Password(config.Password);
+                        //For RabbitMQ
+                        c.Username(config.UserName);
+                        c.Password(config.Password);
 
 
-                        //For Amazon SQS
-                        c.AccessKey(config.AccessKey);
-                        c.SecretKey(config.SecretKey);
-                        // specify a scope for all queues
-                        c.Scope(config.Scope);
-                        // scope topics as well
-                        c.EnableScopedTopics();
+                        ////For Amazon SQS
+                        //c.AccessKey(config.AccessKey);
+                        //c.SecretKey(config.SecretKey);
+                        //// specify a scope for all queues
+                        //c.Scope(config.Scope);
+                        //// scope topics as well
+                        //c.EnableScopedTopics();
 
                     });
 
@@ -112,7 +112,7 @@ namespace MassTransit.Net.EventHandling
 
                     cfg.ReceiveEndpoint(typeof(JobEnqueueIntegrationEvent).Name.ToUnderscoreCase().ToConcatHost("EDUARDO-PC"), e =>
                     {
-                        e.WaitTimeSeconds = 1;
+                        //e.WaitTimeSeconds = 1;
                         e.PrefetchCount = 1;
                         e.Consumer<JobEnqueueIntegrationEventHandler>(provider);
                         EndpointConvention.Map<JobEnqueueIntegrationEvent>(e.InputAddress);
