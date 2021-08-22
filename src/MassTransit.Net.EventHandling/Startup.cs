@@ -76,9 +76,10 @@ namespace MassTransit.Net.EventHandling
             //
             services.AddMassTransit(x =>
             {
+                x.SetKebabCaseEndpointNameFormatter();
 
                 x.AddConsumer<JobEnqueueIntegrationEventHandler>();
-
+                x.AddConsumer<JobStartedIntegrationEventHandler>();
                 x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
                 //x.AddBus(provider => Bus.Factory.CreateUsingAmazonSqs(cfg =>
                 {
@@ -110,12 +111,17 @@ namespace MassTransit.Net.EventHandling
                     //    //ep.UseConcurrencyLimit(1);
                     //});
 
-                    cfg.ReceiveEndpoint(typeof(JobEnqueueIntegrationEvent).Name.ToUnderscoreCase().ToConcatHost("EDUARDO-PC"), e =>
+                    cfg.ReceiveEndpoint(typeof(JobEnqueueIntegrationEvent).Name.ToUnderscoreCase().ToConcatHost(configuration["HostName"]), e =>
                     {
                         //e.WaitTimeSeconds = 1;
-                        e.PrefetchCount = 1;
+                        //e.PrefetchCount = 1;
                         e.Consumer<JobEnqueueIntegrationEventHandler>(provider);
-                        EndpointConvention.Map<JobEnqueueIntegrationEvent>(e.InputAddress);
+                        //EndpointConvention.Map<JobEnqueueIntegrationEvent>(e.InputAddress);
+                    });
+                    cfg.ReceiveEndpoint(typeof(JobStartedIntegrationEvent).Name.ToUnderscoreCase().ToConcatHost(configuration["HostName"]), e =>
+                    {
+                        e.Consumer<JobStartedIntegrationEventHandler>(provider);
+                        //EndpointConvention.Map<JobStartedIntegrationEvent>(e.InputAddress);
                     });
 
                 }));

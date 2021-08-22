@@ -21,6 +21,9 @@ namespace MassTransit.Net.EventHandling
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration(config => {
+                    config.AddCommandLine(args);
+                })
                 .UseSerilog((context, services, configuration) => configuration
                         .ReadFrom.Configuration(context.Configuration)
                         .ReadFrom.Services(services)

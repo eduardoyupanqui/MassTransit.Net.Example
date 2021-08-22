@@ -25,16 +25,16 @@ namespace MassTransit.Net.EventHandling.Application.Commands.Job
         public class CrearJobCommandHandler : IRequestHandler<CrearJobCommand, JobResponse>
         {
             private readonly IMediator _mediator;
-            private readonly IBus _eventBus;
+            private readonly IPublishEndpoint _publishEndpoint;
             private readonly ILogger<CrearJobCommandHandler> _logger;
 
             public CrearJobCommandHandler(
                 MediatR.IMediator mediator,
-                IBus eventBus,
+                IPublishEndpoint publishEndpoint,
                 ILogger<CrearJobCommandHandler> logger)
             {
                 _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-                _eventBus = eventBus ?? throw new ArgumentNullException(nameof(eventBus));
+                _publishEndpoint = publishEndpoint ?? throw new ArgumentNullException(nameof(publishEndpoint));
                 _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             }
             public async Task<JobResponse> Handle(CrearJobCommand objJob, CancellationToken cancellationToken)
@@ -56,7 +56,7 @@ namespace MassTransit.Net.EventHandling.Application.Commands.Job
                 //var registerCommand = _mapper.Map<RegisterOrdenCommand>(ordenViewModel);
                 _logger.LogInformation("----- Publicando Integracion de evento: {IntegrationEventId} desde {AppName} - ({@IntegrationEvent})", eventMessage.IdJob, Program.AppName, eventMessage);
 
-                await _eventBus.Publish(eventMessage);
+               await _publishEndpoint.Publish(eventMessage);
                 //var sendEndpoint = await _eventBus.GetSendEndpoint(new Uri($"queue:{typeof(JobCommand).Name.ToUnderscoreCase().ToConcatHost(eventMessage.HostName)}"));
                 //await sendEndpoint.Send<JobCommand>(eventMessage);
                 _logger.LogInformation($"Se registro evento satisfactoriamente {eventMessage.IdJob}");
