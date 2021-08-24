@@ -18,6 +18,8 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using MassTransit;
+using MassTransit.Definition;
+using MassTransit.Net.EventHandling.Infrastructure.Extensions;
 
 namespace MassTransit.Net.EventHandling
 {
@@ -77,7 +79,7 @@ namespace MassTransit.Net.EventHandling
             services.AddMassTransit(x =>
             {
                 x.SetKebabCaseEndpointNameFormatter();
-
+                
                 x.AddConsumer<JobEnqueueIntegrationEventHandler>();
                 x.AddConsumer<JobStartedIntegrationEventHandler>();
                 x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
@@ -91,7 +93,7 @@ namespace MassTransit.Net.EventHandling
                         c.Username(config.UserName);
                         c.Password(config.Password);
 
-
+                        //c.PublisherConfirmation = false;
                         ////For Amazon SQS
                         //c.AccessKey(config.AccessKey);
                         //c.SecretKey(config.SecretKey);
@@ -101,6 +103,7 @@ namespace MassTransit.Net.EventHandling
                         //c.EnableScopedTopics();
 
                     });
+                    cfg.MessageTopology.SetEntityNameFormatter(new FancyNameFormatter(cfg.MessageTopology.EntityNameFormatter));
 
                     //cfg.ReceiveEndpoint(typeof(JobCommand).Name.ToUnderscoreCase(), ep =>
                     //{
@@ -121,6 +124,7 @@ namespace MassTransit.Net.EventHandling
                     cfg.ReceiveEndpoint(typeof(JobStartedIntegrationEvent).Name.ToUnderscoreCase().ToConcatHost(configuration["HostName"]), e =>
                     {
                         e.Consumer<JobStartedIntegrationEventHandler>(provider);
+                        //e.ConfigureConsumer<JobStartedIntegrationEventHandler>(provider, e => { e.Message<JobStartedIntegrationEvent>(f=> { })});
                         //EndpointConvention.Map<JobStartedIntegrationEvent>(e.InputAddress);
                     });
 

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace MassTransit.Net.EventHandling.Application.IntegrationEvents.Events
 {
-    public class JobStartedIntegrationEvent
+    public class JobStartedIntegrationEvent : IntegrationEvent
     {
         public Guid UsuarioRegistro { get; set; }
         public Guid IdJob { get; set; }
