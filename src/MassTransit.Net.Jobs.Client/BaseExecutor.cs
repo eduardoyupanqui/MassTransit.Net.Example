@@ -2,7 +2,6 @@
 using MassTransit.Net.Jobs.Client.EventArgs;
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 
