@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
-using GreenPipes;
+using MassTransit;
 using MassTransit.Net.Configuration.Consumers;
 using MassTransit.Net.Configuration.Messages;
 using MassTransit.Net.Configuration.Observers;

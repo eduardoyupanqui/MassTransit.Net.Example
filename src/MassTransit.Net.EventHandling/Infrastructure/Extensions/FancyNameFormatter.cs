@@ -1,6 +1,4 @@
-﻿using MassTransit.Topology;
-using MassTransit.Topology.EntityNameFormatters;
-using MassTransit.Transports;
+﻿using MassTransit.Transports;
 using System;
 using System.Collections.Generic;
 using System.Linq;

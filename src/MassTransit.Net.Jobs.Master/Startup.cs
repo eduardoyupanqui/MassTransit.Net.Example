@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
-using GreenPipes;
 using MassTransit.Net.Jobs.Client;
 using MassTransit.Net.Jobs.Client.Commands;
 using MassTransit.Net.Jobs.Master.Consumers;
@@ -68,7 +68,7 @@ namespace MassTransit.Net.Jobs.Master
                 {
                     var bus = context.RequestServices.GetService<IBus>();
                     context.Response.ContentType = "application/json";
-                    string jsonString = Newtonsoft.Json.JsonConvert.SerializeObject(bus.GetProbeResult());
+                    string jsonString = JsonSerializer.Serialize(bus.GetProbeResult());
                     await context.Response.WriteAsync(jsonString); ;
                 });
             });

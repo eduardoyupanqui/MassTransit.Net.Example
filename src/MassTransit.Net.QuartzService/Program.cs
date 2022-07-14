@@ -1,5 +1,4 @@
-﻿using GreenPipes;
-using MassTransit;
+﻿using MassTransit;
 using MassTransit.QuartzIntegration;
 using MassTransit.Scheduling;
 using Microsoft.Extensions.Configuration;
@@ -55,7 +54,7 @@ namespace MassTransit.Net.QuartzService
                     cfg.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
                     {
                         var options = provider.GetRequiredService<IOptions<AppConfig>>().Value;
-                        var scheduler = provider.GetRequiredService<IScheduler>();
+                        var schedulerFactory = provider.GetRequiredService<ISchedulerFactory>();
 
 
                         cfg.Host(options.Host, options.VirtualHost, h =>
@@ -68,14 +67,14 @@ namespace MassTransit.Net.QuartzService
 
                         cfg.ReceiveEndpoint(options.QueueName, endpoint =>
                         {
-                            var partitionCount = Environment.ProcessorCount;
-                            endpoint.PrefetchCount = (ushort)(partitionCount);
-                            var partitioner = endpoint.CreatePartitioner(partitionCount);
+                          var partitionCount = Environment.ProcessorCount;
+                          endpoint.PrefetchCount = (ushort)(partitionCount);
+                          var partitioner = endpoint.CreatePartitioner(partitionCount);
 
-                            endpoint.Consumer(() => new ScheduleMessageConsumer(scheduler), x =>
-                                x.Message<ScheduleMessage>(m => m.UsePartitioner(partitioner, p => p.Message.CorrelationId)));
-                            endpoint.Consumer(() => new CancelScheduledMessageConsumer(scheduler),
-                                x => x.Message<CancelScheduledMessage>(m => m.UsePartitioner(partitioner, p => p.Message.TokenId)));
+                          endpoint.Consumer(() => new ScheduleMessageConsumer(schedulerFactory), x =>
+                              x.Message<ScheduleMessage>(m => m.UsePartitioner(partitioner, p => p.Message.CorrelationId)));
+                          endpoint.Consumer(() => new CancelScheduledMessageConsumer(schedulerFactory),
+                              x => x.Message<CancelScheduledMessage>(m => m.UsePartitioner(partitioner, p => p.Message.TokenId)));
                         });
                     }));
                 });

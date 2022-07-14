@@ -25,7 +25,7 @@ namespace MassTransit.Net.EventHandling.Application.IntegrationEvents.EventHandl
         public async Task Consume(ConsumeContext<JobEnqueueIntegrationEvent> context)
         {
             var @event = context.Message;
-            using (LogContext.PushProperty("IntegrationEventContext", $"{context.MessageId}-{Program.AppName}"))
+            using (Serilog.Context.LogContext.PushProperty("IntegrationEventContext", $"{context.MessageId}-{Program.AppName}"))
             {
                 _logger.LogInformation("----- Handling integration event: {IntegrationEventId} at {AppName} - ({@IntegrationEvent})", context.MessageId, Program.AppName, @event);
 

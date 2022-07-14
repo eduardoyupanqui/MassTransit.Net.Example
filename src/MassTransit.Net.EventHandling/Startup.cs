@@ -18,7 +18,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using MassTransit;
-using MassTransit.Definition;
 using MassTransit.Net.EventHandling.Infrastructure.Extensions;
 
 namespace MassTransit.Net.EventHandling
