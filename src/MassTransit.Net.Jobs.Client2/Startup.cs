@@ -23,15 +23,14 @@ namespace MassTransit.Net.Jobs.Client2
             services.AddMassTransit(x =>
             {
                 x.AddConsumer<JobConsumer<ReplicarVersionSolicitud>>();
-                x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
+                x.UsingRabbitMq((provider, cfg) =>
                 {
                     cfg.Host("rabbitmq://localhost/vhost-job");
 
                     cfg.ReceivedJobEndpoint<ReplicarVersionSolicitud>(provider, host: "EDUARDO-PC");
                     
-                }));
+                });
             });
-            services.AddMassTransitHostedService();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

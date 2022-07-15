@@ -51,7 +51,7 @@ namespace MassTransit.Net.QuartzService
                 // Service Bus
                 services.AddMassTransit(cfg =>
                 {
-                    cfg.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
+                    cfg.UsingRabbitMq((provider, cfg) =>
                     {
                         var options = provider.GetRequiredService<IOptions<AppConfig>>().Value;
                         var schedulerFactory = provider.GetRequiredService<ISchedulerFactory>();
@@ -76,7 +76,7 @@ namespace MassTransit.Net.QuartzService
                           endpoint.Consumer(() => new CancelScheduledMessageConsumer(schedulerFactory),
                               x => x.Message<CancelScheduledMessage>(m => m.UsePartitioner(partitioner, p => p.Message.TokenId)));
                         });
-                    }));
+                    });
                 });
 
                 services.AddHostedService<MassTransitConsoleHostedService>();

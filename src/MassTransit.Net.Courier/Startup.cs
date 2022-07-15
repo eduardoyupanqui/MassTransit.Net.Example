@@ -24,7 +24,7 @@ namespace MassTransit.Net.Courier
                 x.AddExecuteActivity<ProcessImageActivity, ProcessImageArguments>();
                 x.AddActivity<DownloadImageActivity, DownloadImageArguments, DownloadImageLog>();
 
-                x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
+                x.UsingRabbitMq((provider, cfg) =>
                 {
                     cfg.Host("rabbitmq://localhost/vhost-courier");
 
@@ -40,9 +40,8 @@ namespace MassTransit.Net.Courier
                     {
                         receiveEndpointConfigurator.CompensateActivityHost<DownloadImageActivity, DownloadImageLog>(provider);
                     });
-                }));
+                });
             });
-            services.AddMassTransitHostedService();
             services.AddControllers();
         }
 

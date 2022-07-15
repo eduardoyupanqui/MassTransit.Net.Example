@@ -29,7 +29,7 @@ namespace MassTransit.Net.QuartzService
             _logger.LogInformation("Starting bus");
             await _bus.StartAsync(cancellationToken).ConfigureAwait(false);
 
-            _scheduler.JobFactory = new MassTransitJobFactory(_bus, null);
+            _scheduler.JobFactory = new MassTransitJobFactory(_bus);
             try
             {
                 _logger.LogInformation("Starting scheduler");

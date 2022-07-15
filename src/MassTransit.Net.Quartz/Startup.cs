@@ -22,7 +22,7 @@ namespace MassTransit.Net.Quartz
             {
                 x.AddConsumer<ScheduleNotificationConsumer>();
                 x.AddConsumer<NotificationConsumer>();
-                x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
+                x.UsingRabbitMq((provider, cfg) =>
                 {
                     cfg.Host("localhost");
 
@@ -38,9 +38,8 @@ namespace MassTransit.Net.Quartz
                     });
 
 
-                }));
+                });
             });
-            services.AddMassTransitHostedService();
             services.AddControllers();
         }
 

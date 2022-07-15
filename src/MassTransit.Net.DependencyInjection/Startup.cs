@@ -23,7 +23,7 @@ namespace MassTransit.Net.DependencyInjection
                 x.AddConsumer<OrderConsumer>();
                 x.AddConsumer<CheckOrderStatusConsumer>();
 
-                x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
+                x.UsingRabbitMq((provider, cfg) =>
                 {
                     cfg.Host("localhost");
 
@@ -39,7 +39,7 @@ namespace MassTransit.Net.DependencyInjection
 
                     // or, configure the endpoints by convention
                     cfg.ConfigureEndpoints(provider);
-                }));
+                });
 
                 x.AddRequestClient<SubmitOrder>();
 

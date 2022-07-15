@@ -26,7 +26,7 @@ namespace MassTransit.Net.Jobs.Master
                 x.AddConsumer<JobTaskCompletedConsumer>();
                 x.AddConsumer<JobCompletedConsumer>();
                 x.AddConsumer<JobFailedConsumer>();
-                x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
+                x.UsingRabbitMq((provider, cfg) =>
                 {
                     cfg.Host("rabbitmq://localhost/vhost-job");
 
@@ -42,10 +42,9 @@ namespace MassTransit.Net.Jobs.Master
                         ep.UseConcurrencyLimit(1);
                     });
 
-                }));
+                });
 
             });
-            services.AddMassTransitHostedService();
             services.AddControllers();
         }
 

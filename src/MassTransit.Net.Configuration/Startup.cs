@@ -29,7 +29,7 @@ namespace MassTransit.Net.Configuration
             {
                 x.AddConsumer<OrderConsumer>();
 
-                x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
+                x.UsingRabbitMq((provider, cfg) =>
                 {
 
                     cfg.Host("rabbitmq://localhost");
@@ -80,10 +80,8 @@ namespace MassTransit.Net.Configuration
                     });
 
 
-                }));
+                });
             });
-
-            services.AddMassTransitHostedService();
 
             services.Configure<HealthCheckPublisherOptions>(options =>
             {

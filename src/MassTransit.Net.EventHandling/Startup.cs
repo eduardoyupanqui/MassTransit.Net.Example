@@ -81,10 +81,10 @@ namespace MassTransit.Net.EventHandling
                 
                 x.AddConsumer<JobEnqueueIntegrationEventHandler>();
                 x.AddConsumer<JobStartedIntegrationEventHandler>();
-                x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
-                //x.AddBus(provider => Bus.Factory.CreateUsingAmazonSqs(cfg =>
+                x.UsingRabbitMq((provider, cfg) =>
+                //x.UsingAmazonSqs((provider, cfg) =>
                 {
-                    var config = provider.GetRequiredService<IOptions<MasstransitConfig>>().Value;
+                  var config = provider.GetRequiredService<IOptions<MasstransitConfig>>().Value;
                     cfg.Host(config.Host, c =>
                     //cfg.Host(config.Region, c =>
                     {
@@ -127,7 +127,7 @@ namespace MassTransit.Net.EventHandling
                         //EndpointConvention.Map<JobStartedIntegrationEvent>(e.InputAddress);
                     });
 
-                }));
+                });
 
             });
 
@@ -137,7 +137,7 @@ namespace MassTransit.Net.EventHandling
 
         public static IServiceCollection AddCustomRegisterEventBusJob(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddMassTransitHostedService();
+            //services.AddMassTransitHostedService();
             //
             return services;
         }
